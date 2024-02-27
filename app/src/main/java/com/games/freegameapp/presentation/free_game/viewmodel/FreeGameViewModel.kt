@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -34,7 +35,7 @@ class FreeGameViewModel @Inject constructor(private val useCase: FreeGameUseCase
         getAllFreeGames()
     }
 
-    private fun getAllFreeGames() = useCase().onEach {
+    private fun getAllFreeGames() = viewModelScope.launch {  useCase().onEach {
         when(it) {
             is Resource.Error -> {
                 _freeGameState.value = FreeGameState().copy(errorMsg = it.msg)
@@ -47,7 +48,8 @@ class FreeGameViewModel @Inject constructor(private val useCase: FreeGameUseCase
                 _freeGameState.value = FreeGameState().copy(freeGames = it.data)
             }
         }
-    }.launchIn(viewModelScope)
+    }.launchIn(viewModelScope)}
+
 
 
     fun onEvent(uiEvent: UiEvent) {
