@@ -4,5 +4,4 @@ This App has all the necessary concept to learn android development which includ
 
 MVVM, Clean code architecture, MVI, Jetpack Compose, Retrofit, Dagger Hilt 
 
-for complete detail watch below video:
 
