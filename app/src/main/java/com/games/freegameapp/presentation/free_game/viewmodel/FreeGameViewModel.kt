@@ -13,6 +13,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -35,22 +37,24 @@ class FreeGameViewModel @Inject constructor(private val useCase: FreeGameUseCase
         getAllFreeGames()
     }
 
-    private fun getAllFreeGames() = viewModelScope.launch {  useCase().onEach {
-        when(it) {
-            is Resource.Error -> {
-                _freeGameState.value = FreeGameState().copy(errorMsg = it.msg)
-                _uiEffect.emit(UiEffect.ShowSnackBar(it.msg.toString()))
-            }
-            is Resource.Loading -> {
-                _freeGameState.value = FreeGameState().copy(isLoading = true)
-            }
-            is Resource.Success -> {
-                _freeGameState.value = FreeGameState().copy(freeGames = it.data)
-            }
-        }
-    }.launchIn(viewModelScope)}
+    private fun getAllFreeGames() = viewModelScope.launch {
+        useCase().onEach {
+            when (it) {
+                is Resource.Error -> {
+                    _freeGameState.value = FreeGameState().copy(errorMsg = it.msg)
+                    _uiEffect.emit(UiEffect.ShowSnackBar(it.msg.toString()))
+                }
 
+                is Resource.Loading -> {
+                    _freeGameState.value = FreeGameState().copy(isLoading = true)
+                }
 
+                is Resource.Success -> {
+                    _freeGameState.value = FreeGameState().copy(freeGames = it.data)
+                }
+            }
+        }.collect()
+    }
 
     fun onEvent(uiEvent: UiEvent) {
         when(uiEvent) {
