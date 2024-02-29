@@ -16,51 +16,50 @@ import org.mockito.Mockito.mock
 import org.mockito.Mockito.`when`
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class MovieViewModelShould {
+class GameViewModelShould {
 
     @get:Rule
     val mainCoroutineRule =  MainCoroutineRule()
 
-    private val getMovieUseCase : FreeGameUseCase = mock()
-    private lateinit var movieViewModel : FreeGameViewModel
-    private val movieList : List<FreeGames>? = mock()
+    private val getGameUseCase : FreeGameUseCase = mock()
+    private lateinit var freeGameViewModel : FreeGameViewModel
+    private val gameList : List<FreeGames>? = mock()
 
     @Before
     fun setup(){
-        movieViewModel =  FreeGameViewModel(getMovieUseCase)
+        freeGameViewModel =  FreeGameViewModel(getGameUseCase)
     }
 
     @Test
     fun validateUserWillSeeProgressBarInitially() = runTest {
-        `when`(getMovieUseCase.invoke()).thenReturn(
+        `when`(getGameUseCase.invoke()).thenReturn(
             flow {
                 emit(Resource.Loading())
             }
         )
         mainCoroutineRule.testDispatcher.scheduler.advanceUntilIdle()
-        Assert.assertEquals(true,movieViewModel.freeGameState.value.isLoading)
+        Assert.assertEquals(true,freeGameViewModel.freeGameState.value.isLoading)
     }
 
     @Test
     fun validateSuccessStateIsStoredInMovieList() = runTest {
-        `when`(getMovieUseCase.invoke()).thenReturn(
+        `when`(getGameUseCase.invoke()).thenReturn(
             flow {
-                emit(Resource.Success(movieList))
+                emit(Resource.Success(gameList))
             }
         )
         mainCoroutineRule.testDispatcher.scheduler.advanceUntilIdle()
-        Assert.assertEquals(movieList,movieViewModel.freeGameState.value.freeGames)
+        Assert.assertEquals(gameList,freeGameViewModel.freeGameState.value.freeGames)
     }
 
     @Test
     fun throwErrorInErrorCase() = runTest {
-        `when`(getMovieUseCase.invoke()).thenReturn(
+        `when`(getGameUseCase.invoke()).thenReturn(
             flow {
                 emit(Resource.Error("Something Went Wrong"))
             }
         )
         mainCoroutineRule.testDispatcher.scheduler.advanceUntilIdle()
-        Assert.assertEquals("Something Went Wrong",movieViewModel.freeGameState.value.errorMsg)
+        Assert.assertEquals("Something Went Wrong",freeGameViewModel.freeGameState.value.errorMsg)
     }
-
 }

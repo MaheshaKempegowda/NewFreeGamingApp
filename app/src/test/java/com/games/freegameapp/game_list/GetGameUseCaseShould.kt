@@ -17,27 +17,27 @@ import org.mockito.Mockito.mock
 import org.mockito.Mockito.`when`
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class GetMovieUseCaseShould {
+class GetGameUseCaseShould {
 
 
     private lateinit var getMovieRepository: FreeGamesRepository
-    private lateinit var getMovieUseCase: FreeGameUseCase
-    private val movieList  = mock <Flow<Resource<List<FreeGames>>>>()
+    private lateinit var getGamesUseCase: FreeGameUseCase
+    private val gamesList  = mock <Flow<Resource<List<FreeGames>>>>()
 
     @Before
     fun setUp(){
         getMovieRepository = mock()
-        getMovieUseCase = FreeGameUseCase(getMovieRepository)
+        getGamesUseCase = FreeGameUseCase(getMovieRepository)
 
     }
 
     @Test
     fun returnMovieFromUseCaseInSuccess() = runTest{
         `when`(getMovieRepository.getFreeGames()).thenReturn(
-            movieList
+            gamesList
         )
-        getMovieUseCase.invoke().onEach {
-            Assert.assertEquals(movieList,it.data)
+        getGamesUseCase.invoke().onEach {
+            Assert.assertEquals(gamesList,it.data)
         }
     }
 
@@ -48,9 +48,8 @@ class GetMovieUseCaseShould {
                 emit(Resource.Error("Something Went Wrong"))
             }
         )
-        getMovieUseCase.invoke().onEach {
+        getGamesUseCase.invoke().onEach {
             Assert.assertEquals("Something Went Wrong",it.msg)
         }
     }
-
 }

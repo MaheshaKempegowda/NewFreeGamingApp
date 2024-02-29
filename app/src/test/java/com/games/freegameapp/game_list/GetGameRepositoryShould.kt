@@ -17,7 +17,7 @@ import org.mockito.Mockito.`when`
 
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class GetMovieRepositoryShould {
+class GetGameRepositoryShould {
 
     @get:Rule
     val mainCoroutineRule = MainCoroutineRule()
@@ -39,6 +39,5 @@ class GetMovieRepositoryShould {
         freeGamesRepository.getFreeGames().onEach {
             Assert.assertEquals(gamesList,it.data)
         }
-
     }
 }
