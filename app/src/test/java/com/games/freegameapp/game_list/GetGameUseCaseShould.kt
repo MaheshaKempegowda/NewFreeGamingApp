@@ -1,5 +1,3 @@
-package com.example.movieapp.movie_list
-
 
 import com.games.freegameapp.core.common.Resource
 import com.games.freegameapp.domain.model.FreeGames
@@ -19,21 +17,20 @@ import org.mockito.Mockito.`when`
 @OptIn(ExperimentalCoroutinesApi::class)
 class GetGameUseCaseShould {
 
-
-    private lateinit var getMovieRepository: FreeGamesRepository
+    private lateinit var getFreeGameRepository: FreeGamesRepository
     private lateinit var getGamesUseCase: FreeGameUseCase
     private val gamesList  = mock <Flow<Resource<List<FreeGames>>>>()
 
     @Before
     fun setUp(){
-        getMovieRepository = mock()
-        getGamesUseCase = FreeGameUseCase(getMovieRepository)
+        getFreeGameRepository = mock()
+        getGamesUseCase = FreeGameUseCase(getFreeGameRepository)
 
     }
 
     @Test
     fun returnMovieFromUseCaseInSuccess() = runTest{
-        `when`(getMovieRepository.getFreeGames()).thenReturn(
+        `when`(getFreeGameRepository.getFreeGames()).thenReturn(
             gamesList
         )
         getGamesUseCase.invoke().onEach {
@@ -43,7 +40,7 @@ class GetGameUseCaseShould {
 
     @Test
     fun returnErrorFromUseCaseInSuccess() = runTest{
-        `when`(getMovieRepository.getFreeGames()).thenReturn(
+        `when`(getFreeGameRepository.getFreeGames()).thenReturn(
             flow {
                 emit(Resource.Error("Something Went Wrong"))
             }

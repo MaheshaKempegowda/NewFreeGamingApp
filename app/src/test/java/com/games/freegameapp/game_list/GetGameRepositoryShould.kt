@@ -1,4 +1,3 @@
-package com.example.movieapp.movie_list
 
 import com.games.freegameapp.MainCoroutineRule
 import com.games.freegameapp.data.remote.FreeGameApi
